@@ -184,6 +184,7 @@ public class WhiteBox {
   public native void freeCodeBlob(long address);
   public native Object[] getCodeBlob(long address);
   public native long allocateMetaspace(ClassLoader classLoader, long size);
+  public native long maxMetaspaceAllocationSize();
   public native void freeMetaspace(ClassLoader classLoader, long addr, long size);
   public native long incMetaspaceCapacityUntilGC(long increment);
   public native long metaspaceCapacityUntilGC();

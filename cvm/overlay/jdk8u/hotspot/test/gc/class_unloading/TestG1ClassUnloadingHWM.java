@@ -51,8 +51,7 @@ public class TestG1ClassUnloadingHWM {
       "-Xmn" + YoungGenSize,
       "-XX:+UseG1GC",
       "-XX:" + (enableUnloading ? "+" : "-") + "ClassUnloadingWithConcurrentMark",
-      "-XX:+PrintHeapAtGC",
-      "-XX:+PrintGCDetails",
+      "-Xlog:gc",
       TestG1ClassUnloadingHWM.AllocateBeyondMetaspaceSize.class.getName(),
       "" + MetaspaceSize,
       "" + YoungGenSize);
@@ -71,16 +70,16 @@ public class TestG1ClassUnloadingHWM {
     // -XX:-ClassUnloadingWithConcurrentMark is used, so we expect a full GC instead of a concurrent cycle.
     OutputAnalyzer out = runWithoutG1ClassUnloading();
 
-    out.shouldMatch(".*Full GC.*");
-    out.shouldNotMatch(".*initial-mark.*");
+    out.shouldMatch(".*Pause Full.*");
+    out.shouldNotMatch(".*Pause Young \\(Concurrent Start\\).*");
   }
 
   public static void testWithG1ClassUnloading() throws Exception {
     // -XX:+ClassUnloadingWithConcurrentMark is used, so we expect a concurrent cycle instead of a full GC.
     OutputAnalyzer out = runWithG1ClassUnloading();
 
-    out.shouldMatch(".*initial-mark.*");
-    out.shouldNotMatch(".*Full GC.*");
+    out.shouldMatch(".*Pause Young \\(Concurrent Start\\).*");
+    out.shouldNotMatch(".*Pause Full.*");
   }
 
   public static void main(String args[]) throws Exception {
@@ -101,12 +100,17 @@ public class TestG1ClassUnloadingHWM {
       // Allocate past the MetaspaceSize limit
       long metaspaceSize = Long.parseLong(args[0]);
       long allocationBeyondMetaspaceSize  = metaspaceSize * 2;
-      long metaspace = wb.allocateMetaspace(null, allocationBeyondMetaspaceSize);
+
+      // There is a cap on how large a single metaspace allocation can get. So we may have to allocate in blocks.
+      final long max = wb.maxMetaspaceAllocationSize();
+      while (allocationBeyondMetaspaceSize > 0) {
+        long s = max < allocationBeyondMetaspaceSize ? max : allocationBeyondMetaspaceSize;
+        wb.allocateMetaspace(null, s);
+        allocationBeyondMetaspaceSize -= s;
+      }
 
       long youngGenSize = Long.parseLong(args[1]);
       triggerYoungGCs(youngGenSize);
-
-      wb.freeMetaspace(null, metaspace, metaspace);
     }
 
     public static void triggerYoungGCs(long youngGenSize) {
