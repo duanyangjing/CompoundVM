@@ -25,7 +25,6 @@ compiler/tiered/LevelTransitionTest.java
 gc/6941923/Test6941923.java
 gc/arguments/TestSurvivorAlignmentInBytesOption.java
 gc/class_unloading/TestCMSClassUnloadingEnabledHWM.java
-gc/class_unloading/TestG1ClassUnloadingHWM.java
 gc/ergonomics/TestDynamicNumberOfGCThreads.java
 gc/g1/TestEagerReclaimHumongousRegionsClearMarkBits.java
 gc/g1/TestG1TraceEagerReclaimHumongousObjects.java

@@ -447,6 +447,7 @@ endif
 	$(call overlay_single,jdk8u,hotspot/test/gc/arguments/TestInitialTenuringThreshold.java, $(JDK8_SRCROOT))
 	$(call overlay_single,jdk8u,hotspot/test/gc/arguments/TestUnrecognizedVMOptionsHandling.java, $(JDK8_SRCROOT))
 	$(call overlay_single,jdk8u,hotspot/test/gc/arguments/TestUseCompressedOopsErgoTools.java, $(JDK8_SRCROOT))
+	$(call overlay_single,jdk8u,hotspot/test/gc/class_unloading/TestG1ClassUnloadingHWM.java, $(JDK8_SRCROOT))
 	$(call overlay_single,jdk8u,hotspot/test/testlibrary/whitebox/sun/hotspot/WhiteBox.java, $(JDK8_SRCROOT))
 	$(call overlay_single,jdk8u,hotspot/test/gc/startup_warnings/TestDefaultMaxRAMFraction.java, $(JDK8_SRCROOT))
 
